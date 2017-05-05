@@ -4,11 +4,10 @@ defmodule Sableye.Router do
   plug :match
   plug :dispatch
 
-  get "/" do
-    send_resp(conn, 200, :templates.index([name: "Zeyi"]))
-  end
+  get "/", do: Sableye.Home.home conn
 
   match _ do
-    send_resp(conn, 404, "Oops!")
+    {:ok, resp} = :templates.render(:"404", [])
+    send_resp(conn, 404, resp)
   end
 end

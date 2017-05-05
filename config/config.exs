@@ -28,3 +28,13 @@ use Mix.Config
 # here (which is why it is important to import them last).
 #
 #     import_config "#{Mix.env}.exs"
+
+config :sableye, ecto_repos: [Sableye.Model]
+
+config :sableye, Sableye.Model,
+  adapter: Ecto.Adapters.MySQL,
+  database: "sableye",
+  username: "sableye",
+  password: "sableye",
+  hostname: "localhost",
+  port: "3306"
