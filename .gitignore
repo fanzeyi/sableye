@@ -17,3 +17,7 @@ erl_crash.dump
 *.ez
 
 /templates_out
+
+/static
+
+/node_modules

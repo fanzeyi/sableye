@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}Login{% endblock %}
+
+{% block body %}
+<form class="ui form {% if errors %}error{% endif %}" action="/login" method="POST">
+  <h2 class="ui header">Login</h2>
+  <div class="ui error message">
+      <div class="header">
+          There were some errors with your submission
+      </div>
+      <ul class="list">
+          {% for msg in errors %}
+          <li>{{ msg | capfirst }}</li>
+          {% endfor %}
+      </ul>
+  </div>
+  <div class="required field {% if errors.username %}error{% endif %}">
+    <label>Username</label>
+    <input type="text" name="username" placeholder="Username" {% if model.username %}value="{{ model.username }}"{% endif %}>
+  </div>
+  <div class="required field {% if errors.password %}error{% endif %}">
+    <label>Password</label>
+    <input type="password" name="password" placeholder="Password">
+  </div>
+
+  <div class="ui buttons">
+    <button class="ui primary button" type="submit">Login</button>
+    <div class="or"></div>
+    <a class="ui button" href="/register">Register</a>
+  </div>
+
+</form>
+{% endblock %}

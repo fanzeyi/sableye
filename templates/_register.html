@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}Register{% endblock %}
+
+{% block body %}
+<form class="ui form {% if errors %}error{% endif %}" action="/register" method="POST">
+  <h2 class="ui header">Register</h2>
+  <div class="ui error message">
+      <div class="header">
+          There were some errors with your submission
+      </div>
+      <ul class="list">
+          {% for msg in errors %}
+          <li>{{ msg | capfirst }}</li>
+          {% endfor %}
+      </ul>
+  </div>
+  <div class="required field {% if errors.email %}error{% endif %}">
+    <label>E-mail</label>
+    <input type="email" name="email" placeholder="E-mail" {% if model.email %}value="{{ model.email }}"{% endif %}>
+  </div>
+
+  <div class="required field {% if errors.username %}error{% endif %}">
+    <label>Username</label>
+    <input type="text" name="username" placeholder="Username" {% if model.username %}value="{{ model.username }}"{% endif %}>
+  </div>
+  <div class="required field {% if errors.password %}error{% endif %}">
+    <label>Password</label>
+    <input type="password" name="password" placeholder="Password">
+  </div>
+  <div class="required field">
+    <div class="ui checkbox">
+      <input type="checkbox" tabindex="0" class="hidden" name="tos" id="tos">
+      <label for="tos">I agree to the <a href="/about/tos" target="_blank" tabindex="-1">Terms and Conditions</a> and <a href="/about/privacy" target="_blank" tabindex="-1">Privacy Policy</a></label>
+    </div>
+  </div>
+
+  <button class="ui primary button" type="submit">Register</button>
+</form>
+{% endblock %}
