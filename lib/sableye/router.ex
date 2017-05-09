@@ -12,6 +12,7 @@ defmodule Sableye.Router do
   plug Plug.Parsers, parsers: [:urlencoded]
   plug :put_secret_key_base
   plug :fetch_session
+  plug :bind_user
   plug :match
   plug :dispatch
 
@@ -22,15 +23,15 @@ defmodule Sableye.Router do
 
   alias Sableye.Model
 
-  plug :bind_user
-
   def bind_user(conn, _) do
     case get_session(conn, :user) do
       nil -> conn
       x -> case Model.get(Model.User, x) do
-        nil -> conn
+        nil ->
+          conn
         user ->
-          assign(conn, :user, user)
+          conn = assign(conn, :user, user)
+          conn
       end
     end
   end
@@ -42,6 +43,8 @@ defmodule Sableye.Router do
 
   get "/login", do: Sableye.User.login :get, conn
   post "/login", do: Sableye.User.login :post, conn
+
+  get "/logout", do: Sableye.User.logout :get, conn
 
   match _ do
     {:ok, resp} = :templates.render(:"404", [])

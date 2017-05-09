@@ -1,7 +1,7 @@
 defmodule Sableye.Home do
-  import Plug.Conn
+  import Sableye.View
 
   def home(conn) do
-    send_resp(conn, 200, :templates.index([name: "Zeyi"]))
+    conn |> render(:index)
   end
 end

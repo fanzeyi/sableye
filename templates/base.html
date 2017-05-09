@@ -20,8 +20,13 @@
               <a href="/" class="item">Home</a>
 
               <div class="right menu">
+                  {% if user.username == null %}
                   <a class="item" href="/login">Login</a>
                   <a class="item" href="/register">Register</a>
+                  {% else %}
+                  <a class="item">{{ user.username }}</a>
+                  <a class="item" href="/logout">Logout</a>
+                  {% endif %}
               </div>
           </div>
       </div>
