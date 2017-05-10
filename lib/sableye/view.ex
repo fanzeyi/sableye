@@ -41,4 +41,11 @@ defmodule Sableye.View do
       data -> {:ok, data}
     end
   end
+
+  def ok_non_empty(things) do
+    case things do
+      nil -> {:error, ""}
+      t -> {:ok, t}
+    end
+  end
 end

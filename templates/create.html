@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block body %}
+<form class="ui form {% if errors %}error{% endif %}" action="/_/create" method="POST">
+  <h2 class="ui header">Create a Post</h2>
+  <div class="ui error message">
+      <div class="header">
+          There were some errors with your submission
+      </div>
+      <ul class="list">
+          {% for msg in errors %}
+          <li>{{ msg | capfirst }}</li>
+          {% endfor %}
+      </ul>
+  </div>
+
+  <div class="required field {% if errors.email %}error{% endif %}">
+    <label>Title</label>
+    <input type="text" name="title" placeholder="Title" {% if model.title %}value="{{ model.title }}"{% endif %}>
+  </div>
+
+  <div class="required field {% if errors.username %}error{% endif %}">
+    <label>Content</label>
+    <textarea rows="30" name="content" placeholder="Content">{% if model.content %}{{ model.content }}{% endif %}</textarea>
+  </div>
+
+  <button class="ui primary button" type="submit">Post</button>
+</form>
+{% endblock %}

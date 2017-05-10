@@ -2,5 +2,19 @@
 
 {% block title%}Home{% endblock %}
 
-{% block head %}
+{% block body %}
+<div class="ui divided items">
+    {% for post in posts %}
+    <div class="item">
+        <div class="content">
+            <a class="header" href="/post/{{ post.id }}">{{ post.title }}</a>
+            <div class="extra">Wrote by {{ post.user.username }} | Created at {{ post.inserted_at | ndt_to_erl | date }}</div>
+            <!--<div class="extra"><i class="user icon"></i>{{ post.user.username }} | <i class="calendar outline icon"></i>{{ post.inserted_at | ndt_to_erl | date }}</div>-->
+            <div class="description">
+                {{ post.content }}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
 {% endblock %}

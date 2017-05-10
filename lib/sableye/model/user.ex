@@ -2,6 +2,7 @@ defmodule Sableye.Model.User do
   use Ecto.Schema
 
   alias Comeonin.Bcrypt
+  alias Sableye.Model
   import Ecto.Changeset
   import Ecto.Query, only: [from: 2]
 
@@ -10,6 +11,7 @@ defmodule Sableye.Model.User do
     field :username
     field :password
     field :tos, :string, virtual: true
+    has_many :posts, Model.Post
   end
 
   def changeset(user, params \\ %{}) do

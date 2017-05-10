@@ -24,6 +24,10 @@
                   <a class="item" href="/login">Login</a>
                   <a class="item" href="/register">Register</a>
                   {% else %}
+                  <a class="item" href="/_/create">
+                      <i class="plus icon"></i>
+                      Create
+                  </a>
                   <a class="item">{{ user.username }}</a>
                   <a class="item" href="/logout">Logout</a>
                   {% endif %}

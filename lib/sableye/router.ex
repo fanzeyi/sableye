@@ -2,6 +2,8 @@ defmodule Sableye.Router do
   use Plug.Router
   use Plug.ErrorHandler
 
+  require Logger
+
   plug Plug.Session,
     store: :cookie,
     key: "_session",
@@ -30,6 +32,7 @@ defmodule Sableye.Router do
         nil ->
           conn
         user ->
+          Logger.info "logined user"
           conn = assign(conn, :user, user)
           conn
       end
@@ -46,9 +49,13 @@ defmodule Sableye.Router do
 
   get "/logout", do: Sableye.User.logout :get, conn
 
+  get "/_/create", do: Sableye.Post.create :get, conn
+  post "/_/create", do: Sableye.Post.create :post, conn
+
+  get "/post/:post_id", do: Sableye.Post.show :get, conn
+
   match _ do
-    {:ok, resp} = :templates.render(:"404", [])
-    send_resp(conn, 404, resp)
+    conn |> Sableye.View.render(:"404", [])
   end
 
   def handle_errors(conn, %{kind: kind, reason: reason, stack: stack}) do
