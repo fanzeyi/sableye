@@ -2,6 +2,9 @@
 
 {% block title %}Register{% endblock %}
 
+{% block head %}
+{% endblock %}
+
 {% block body %}
 <form class="ui form {% if errors %}error{% endif %}" action="/register" method="POST">
   <h2 class="ui header">Register</h2>
@@ -28,12 +31,15 @@
     <label>Password</label>
     <input type="password" name="password" placeholder="Password">
   </div>
+
   <div class="required field">
     <div class="ui checkbox">
       <input type="checkbox" tabindex="0" class="hidden" name="tos" id="tos">
       <label for="tos">I agree to the <a href="/about/tos" target="_blank" tabindex="-1">Terms and Conditions</a> and <a href="/about/privacy" target="_blank" tabindex="-1">Privacy Policy</a></label>
     </div>
   </div>
+
+  <div class="field">{{ recaptcha | safe }}</div>
 
   <button class="ui primary button" type="submit">Register</button>
 </form>

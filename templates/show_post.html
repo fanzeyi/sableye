@@ -7,4 +7,8 @@
 <div class="ui segment">
   {{ post.content }}
 </div>
+
+<div class="extra">
+  <small>Wrote by {{ post.user.username }} | Created at {{ post.inserted_at | ndt_to_erl | date }} {% if post.user.id == user.id or user.role == "admin" %}| <a href="/post/{{ post.id }}/delete">Delete</a>{% endif %}</small>
+</div>
 {% endblock %}

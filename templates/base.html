@@ -28,7 +28,7 @@
                       <i class="plus icon"></i>
                       Create
                   </a>
-                  <a class="item">{{ user.username }}</a>
+                  <a class="item">{{ user.username }}{% if user.role == "admin"%}<div class="ui green horizontal label">admin</div>{% endif %}</a>
                   <a class="item" href="/logout">Logout</a>
                   {% endif %}
               </div>

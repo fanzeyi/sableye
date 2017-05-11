@@ -8,6 +8,7 @@ defmodule Sableye.Model.Post do
   schema "posts" do
     field :title
     field :content
+    field :deleted, :boolean
     belongs_to :user, Model.User
     timestamps
   end
@@ -17,6 +18,11 @@ defmodule Sableye.Model.Post do
     |> cast(params, [:title, :content])
     |> put_assoc(:user, params["user"])
     |> validate_required([:title, :content], message: "%{label} can't be blank")
-    |> validate_length(:title, min: 8, message: "%{label} should be least %{count} characters")
+    |> validate_length(:title, min: 4, message: "%{label} should be least %{count} characters")
+  end
+
+  def delete(post) do
+    post
+    |> change(deleted: true)
   end
 end

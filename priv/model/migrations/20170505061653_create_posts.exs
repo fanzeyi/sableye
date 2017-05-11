@@ -6,6 +6,7 @@ defmodule Sableye.Model.Migrations.CreatePosts do
       add :title, :string
       add :content, :text
       add :user_id, references(:users)
+      add :deleted, :boolean, null: false, default: false
 
       timestamps()
     end

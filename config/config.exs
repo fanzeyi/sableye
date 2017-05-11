@@ -38,3 +38,7 @@ config :sableye, Sableye.Model,
   password: "sableye",
   hostname: "localhost",
   port: "3306"
+
+config :recaptcha,
+  public_key: "6LcY4yAUAAAAAK48eSi5OI1Jt-7Nb9FgCpzH58a8",
+  secret: {:system, "RECAPTCHA_PRIVATE_KEY"}

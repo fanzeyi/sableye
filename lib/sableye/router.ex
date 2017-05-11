@@ -32,7 +32,6 @@ defmodule Sableye.Router do
         nil ->
           conn
         user ->
-          Logger.info "logined user"
           conn = assign(conn, :user, user)
           conn
       end
@@ -53,6 +52,7 @@ defmodule Sableye.Router do
   post "/_/create", do: Sableye.Post.create :post, conn
 
   get "/post/:post_id", do: Sableye.Post.show :get, conn
+  get "/post/:post_id/delete", do: Sableye.Post.delete :get, conn
 
   match _ do
     conn |> Sableye.View.render(:"404", [])
