@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block head %}
+<script type="text/javascript" src="/static/qrcode.min.js"></script>
+{% endblock %}
+
+{% block body %}
+<form class="ui form {% if errors %}error{% endif %}" action="/totp" method="POST">
+  <h2 class="ui header">Add Two Factor Authorization</h2>
+  <div class="ui error message">
+      <div class="header">
+          There were some errors with your submission
+      </div>
+      <ul class="list">
+          {% for msg in errors %}
+          <li>{{ msg | capfirst }}</li>
+          {% endfor %}
+      </ul>
+  </div>
+
+  <div class="required field {% if errors.email %}error{% endif %}">
+    <label>Please scan following QR code using <a href="https://support.google.com/accounts/answer/1066447?hl=en" rel="nofollow" target="_blank">Google Authenticator</a>, <a href="https://authy.com/" rel="nofollow" target="_blank">Authy</a> or other two factor application</label>
+    <div class="qrcode-wrapper" style="text-align: center; padding: 2em;">
+      <div id="qrcode" style="display: inline-block; "></div>
+    </div>
+    <input type="hidden" name="secret" value="{{ secret }}">
+  </div>
+
+  <div class="required field {% if errors.username %}error{% endif %}">
+    <label>One-time Code</label>
+    <input type="text" name="code" placeholder="One-time Code">
+  </div>
+
+  {% csrf_token %}
+
+  <button class="ui primary button" type="submit">Submit</button>
+</form>
+
+<script type="text/javascript">
+  new QRCode(document.getElementById("qrcode"), "otpauth://totp/CS166:{{ user.username }}?secret={{ secret }}&issuer=zr.is");
+</script>
+{% endblock %}

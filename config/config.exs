@@ -39,6 +39,9 @@ config :sableye, Sableye.Model,
   hostname: "localhost",
   port: "3306"
 
+config :sableye,
+  totp_key: "THIS IS A TOTP KEY"
+
 config :recaptcha,
   public_key: "6LcY4yAUAAAAAK48eSi5OI1Jt-7Nb9FgCpzH58a8",
   secret: {:system, "RECAPTCHA_PRIVATE_KEY"}

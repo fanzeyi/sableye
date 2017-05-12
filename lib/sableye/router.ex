@@ -67,6 +67,9 @@ defmodule Sableye.Router do
 
   get "/logout", do: Sableye.User.logout :get, conn
 
+  get "/totp", do: Sableye.User.totp :get, conn
+  post "/totp", do: Sableye.User.totp :post, conn
+
   get "/_/create", do: Sableye.Post.create :get, conn
   post "/_/create", do: Sableye.Post.create :post, conn
 

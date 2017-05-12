@@ -52,4 +52,35 @@ defmodule Sableye.User do
     |> delete_session(:user)
     |> redirect("/")
   end
+
+  defp generate_totp_secret() do
+    :crypto.hmac(:sha,
+                 Application.get_env(:sableye, :totp_key, "THIS SHOULD NOT BE USED"),
+                 :crypto.strong_rand_bytes(32)) |> Base.encode32
+  end
+
+  def totp(:get, conn) do
+    conn |> render(:totp, [secret: generate_totp_secret()])
+  end
+
+  def totp(:post, conn) do
+    with {:ok, secret} <- get_param(conn.params, "secret"),
+      {:ok, code} <- get_param(conn.params, "code"),
+      true <- :pot.valid_totp(code, secret)
+    do
+      user = conn.assigns[:user]
+      user = user |> Model.User.add_totp(secret)
+
+      Model.update user
+
+      conn |> redirect("/")
+    else
+      false ->
+        conn |> render(:totp, [secret: Map.get(conn.params, "secret", generate_totp_secret()),
+                               errors: ["One-time code is incorrect"]])
+      {:error, error} ->
+        conn |> render(:totp, [secret: Map.get(conn.params, "secret", generate_totp_secret()),
+                               errors: [error]])
+    end
+  end
 end
