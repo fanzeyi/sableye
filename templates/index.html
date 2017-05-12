@@ -10,7 +10,7 @@
             <a class="header" href="/post/{{ post.id }}">{{ post.title }}</a>
             <div class="extra">Wrote by {{ post.user.username }} | Created at {{ post.inserted_at | ndt_to_erl | date }}</div>
             <div class="description">
-                {{ post.content }}
+                {{ post.content | myescape | md | truncatewords:80 | safe }}
             </div>
         </div>
     </div>

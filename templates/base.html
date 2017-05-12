@@ -44,6 +44,9 @@
     <div class="ui center aligned container">
       <div class="ui horizontal inverted small">
           <p>A class project for CS166.</a>
+          {% if last_visit.path %}
+          <p>Last visited page is {{ last_visit.path }} at {{ last_visit.time | from_timestamp | date }} {{ last_visit.time | from_timestamp | time }}</p>
+          {% endif %}
       </div>
       <div class="ui horizontal inverted small divided link list">
         <a class="item" href="#">About</a>

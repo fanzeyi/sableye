@@ -7,6 +7,7 @@ defmodule Sableye.Model.Migrations.CreateUsers do
       add :username, :string, null: false
       add :password, :string
       add :role, :string, null: false, default: "user"
+      add :totp, :string
     end
 
     create unique_index(:users, [:email])

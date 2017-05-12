@@ -12,20 +12,42 @@ defmodule Sableye.Post do
 
   def create(:post, conn) do
     Logger.debug inspect(conn.params)
+    case Map.get(conn.params, "injection", "") == "on" do
+      true ->
+        # Allow SQL Injection
+        with {:ok, title} <- get_param(conn.params, "title"),
+          {:ok, content} <- get_param(conn.params, "content"),
+          {:ok, user} <- get_param(conn.assigns, :user)
+        do
+          query = 'INSERT INTO posts (title, content, user_id, inserted_at, updated_at) VALUES ("#{title}", "#{content}", #{user.id}, CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP())'
+          Logger.debug query
 
-    changeset = Model.Post.changeset(%Model.Post{},
-                                     Map.put(conn.params, "user", conn.assigns[:user]))
+          res = Ecto.Adapters.SQL.query!(Sableye.Model, query)
 
-    case Model.insert(changeset) do
-      {:ok, _} ->
-        redirect(conn, "/")
-      {:error, changeset} ->
-        conn |> render(:create, [model: conn.params,
-                                 errors: format_errors(changeset.errors)])
+          conn |> redirect("/post/#{res.last_insert_id}")
+
+          conn |> render(:create, [model: conn.params,
+                                   errors: []])
+        else
+          {:error, errors} ->
+            conn |> render(:create, [model: conn.params,
+                                     errors: [errors]])
+        end
+      false ->
+        changeset = Model.Post.changeset(%Model.Post{},
+                                         Map.put(conn.params, "user", conn.assigns[:user]))
+        case Model.insert(changeset) do
+          {:ok, post} ->
+            redirect(conn, "/post/#{post.id}")
+          {:error, changeset} ->
+            conn |> render(:create, [model: conn.params,
+                                     errors: format_errors(changeset.errors)])
+        end
     end
+
   end
 
-  def get_post(conn, label \\ "post_id", all \\ false) do
+  defp get_post(conn, label \\ "post_id", all \\ false) do
     with {:ok, post_id} <- get_param(conn.path_params, label),
       {id, ""} <- Integer.parse(post_id),
       {:ok, post} <- Model.get(Model.Post, id) |> ok_non_empty
@@ -43,7 +65,10 @@ defmodule Sableye.Post do
     case get_post(conn) do
       {:ok, post} ->
         post = Model.preload post, :user
-        conn |> render(:show_post, [post: post])
+        conn
+        |> fetch_query_params
+        |> render(:show_post, [post: post,
+                               xss: Map.get(conn.query_params, "xss", "") == "1"])
       {:error, _} -> conn |> render(:"404", [])
     end
   end

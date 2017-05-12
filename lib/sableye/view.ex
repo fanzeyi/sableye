@@ -3,8 +3,9 @@ defmodule Sableye.View do
   require Logger
 
   def render(conn, name, variables \\ []) do
-    variables = variables ++ [user: conn.assigns[:user]]
-    Logger.debug inspect(variables)
+    variables = variables ++ [user: conn.assigns[:user],
+                              last_visit: Map.get(conn.assigns, :last_visit, [])]
+                              #csrf_token: Plug.CSRFProtection.get_csrf_token()]
 
     with {:ok, html} <- :templates.render(name, variables)
     do

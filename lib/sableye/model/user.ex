@@ -13,6 +13,7 @@ defmodule Sableye.Model.User do
     field :username
     field :password
     field :role
+    field :totp
     field :tos, :string, virtual: true
     field :"g-recaptcha-response", :string, virtual: true
     has_many :posts, Model.Post
@@ -20,7 +21,6 @@ defmodule Sableye.Model.User do
 
   def validate_recaptcha(changeset) do
     validate_change changeset, :"g-recaptcha-response", fn :"g-recaptcha-response", code ->
-      Logger.info "Code is " <> inspect(code)
       case Recaptcha.verify(code) do
         {:ok, _} -> []
         {:error, _} -> [:"g-recaptcha-response", "reCAPTCHA challenge failed."]
@@ -29,7 +29,6 @@ defmodule Sableye.Model.User do
   end
 
   def changeset(user, params \\ %{}) do
-    Logger.debug inspect(params)
     user
     |> cast(params, [:email, :username, :password, :tos, :"g-recaptcha-response"])
     |> validate_required([:"g-recaptcha-response"], message: "reCAPTCHA challenge failed.")

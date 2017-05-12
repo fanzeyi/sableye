@@ -14,13 +14,32 @@ defmodule Sableye.Router do
   plug Plug.Parsers, parsers: [:urlencoded]
   plug :put_secret_key_base
   plug :fetch_session
+  plug Plug.CSRFProtection
   plug :bind_user
+  plug :tracking_user
   plug :match
   plug :dispatch
 
   def put_secret_key_base(conn, _) do
     put_in conn.secret_key_base,
       "7DD9882BA80A4AB2A2EF336C10F4A5CC2143E3DD4EFA45E4AED3EA4D1BE88C5ACD"
+  end
+
+  def tracking_user(conn, _) do
+    #Logger.info "Visited " <> conn.request_path
+    Logger.info inspect(conn)
+    case conn.request_path do
+      "/favicon.ico" -> conn
+      _ ->
+        conn
+        |> assign(:last_visit, [
+          path: Map.get(conn.cookies, "last_visited", ""),
+          time: Map.get(conn.cookies, "last_visited_time", "")
+        ])
+        |> put_resp_cookie("last_visited", conn.request_path)
+        |> put_resp_cookie("last_visited_time",
+                           :os.system_time(:seconds) |> Integer.to_string)
+    end
   end
 
   alias Sableye.Model

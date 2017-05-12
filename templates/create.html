@@ -24,6 +24,15 @@
     <textarea rows="30" name="content" placeholder="Content">{% if model.content %}{{ model.content }}{% endif %}</textarea>
   </div>
 
+<div class="field">
+    <div class="ui checkbox">
+        <input type="checkbox" tabindex="0" class="hidden" name="injection" id="injection" {% if model.injection == "on" %}checked{% endif %}>
+      <label for="injection">Enable SQL injection</label>
+    </div>
+  </div>
+
+  {% csrf_token %}
+
   <button class="ui primary button" type="submit">Post</button>
 </form>
 {% endblock %}

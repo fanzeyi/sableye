@@ -5,7 +5,11 @@
 {% block body %}
 <h1 class="ui header">{{ post.title }}</h1>
 <div class="ui segment">
-  {{ post.content }}
+    {% if xss %}
+    {{ post.content | md | xss | safe }}
+    {% else %}
+    {{ post.content | myescape | md | safe }}
+    {% endif %}
 </div>
 
 <div class="extra">

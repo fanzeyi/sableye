@@ -39,6 +39,8 @@
     </div>
   </div>
 
+  {% csrf_token %}
+
   <div class="field">{{ recaptcha | safe }}</div>
 
   <button class="ui primary button" type="submit">Register</button>
