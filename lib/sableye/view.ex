@@ -5,9 +5,8 @@ defmodule Sableye.View do
   def render(conn, name, variables \\ []) do
     variables = variables ++ [user: conn.assigns[:user],
                               last_visit: Map.get(conn.assigns, :last_visit, [])]
-                              #csrf_token: Plug.CSRFProtection.get_csrf_token()]
 
-    with {:ok, html} <- :templates.render(name, variables)
+    with {:ok, html} <- Sableye.Templates.render(name, variables)
     do
       send_resp(conn, 200, html)
     else

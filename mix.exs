@@ -15,8 +15,8 @@ defmodule Sableye.Mixfile do
   # Type "mix help compile.app" for more information
   def application do
     [
-      #applications: [:logger, :cowboy, :erlydtl, :plug, :comeonin, :recaptcha],
-      extra_applications: [:logger],
+      applications: [:logger, :cowboy, :erlydtl, :plug, :comeonin, :recaptcha,
+                     :mariaex, :poison, :earmark, :pot, :ecto],
       mod: {Sableye, []}
     ]
   end
@@ -40,9 +40,8 @@ defmodule Sableye.Mixfile do
       {:comeonin, "~> 3.0"},
       {:recaptcha, "~> 2.1"},
       {:earmark, "~> 1.2"},
-      {:pot, "~> 0.9.5"}
+      {:pot, "~> 0.9.5"},
+      {:distillery, "~> 1.0"}
     ]
   end
-
-
 end

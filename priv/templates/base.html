@@ -2,14 +2,15 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
     <title>{% block title %}{% endblock %}</title>
-    <link rel="stylesheet" type="text/css" href="/static/semantic.min.css">
+    <link rel="stylesheet" type="text/css" href="/static/semantic/semantic.min.css">
     <link rel="stylesheet" type="text/css" href="/static/style.css">
     <script
       src="https://code.jquery.com/jquery-3.1.1.min.js"
       integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
       crossorigin="anonymous"></script>
-    <script src="/static/semantic.min.js"></script>
+    <script src="/static/semantic/semantic.min.js"></script>
     {% block head %}
     {% endblock %}
   </head>
@@ -54,8 +55,8 @@
       </div>
       <div class="ui horizontal inverted small divided link list">
         <a class="item" href="#">About</a>
-        <a class="item" href="#">Terms and Conditions</a>
-        <a class="item" href="#">Privacy Policy</a>
+        <a class="item" href="/tos">Terms and Conditions</a>
+        <a class="item" href="/privacy">Privacy Policy</a>
       </div>
     </div>
   </div>

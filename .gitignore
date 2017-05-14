@@ -18,6 +18,11 @@ erl_crash.dump
 
 /templates_out
 
-/static
+/priv/static/semantic
+
+/semantic
+
+/rel/sableye
+/rel/.files
 
 /node_modules

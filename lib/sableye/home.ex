@@ -17,4 +17,12 @@ defmodule Sableye.Home do
 
     conn |> render(:index, [posts: posts])
   end
+
+  def privacy(conn) do
+    conn |> render(:privacy, [])
+  end
+
+  def tos(conn) do
+    conn |> render(:tos, [])
+  end
 end

@@ -1,0 +1,12 @@
+.container.main {
+  padding-top: 7em;
+}
+
+.ui.footer.segment {
+  border-bottom: none;
+  margin: 5em 0em 0em;
+  padding: 5em 0em;
+}
+
+html {
+}

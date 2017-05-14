@@ -10,7 +10,7 @@ defmodule Sableye.Router do
     encryption_salt: "encrypt  !! ",
     signing_salt: "sign  !!  ",
     key_length: 66
-  plug Plug.Static, at: "/static", from: "./static"
+  plug Plug.Static, at: "/static", from: Path.join(:code.priv_dir(:sableye), "static")
   plug Plug.Parsers, parsers: [:urlencoded]
   plug :put_secret_key_base
   plug :fetch_session
@@ -26,8 +26,6 @@ defmodule Sableye.Router do
   end
 
   def tracking_user(conn, _) do
-    #Logger.info "Visited " <> conn.request_path
-    Logger.info inspect(conn)
     case conn.request_path do
       "/favicon.ico" -> conn
       _ ->
@@ -58,6 +56,8 @@ defmodule Sableye.Router do
   end
 
   get "/", do: Sableye.Home.home conn
+  get "/privacy", do: Sableye.Home.privacy conn
+  get "/tos", do: Sableye.Home.tos conn
 
   get "/register", do: Sableye.User._register :get, conn
   post "/register", do: Sableye.User._register :post, conn
@@ -81,7 +81,7 @@ defmodule Sableye.Router do
   end
 
   def handle_errors(conn, %{kind: kind, reason: reason, stack: stack}) do
-    {:ok, resp} = :templates.render(:"500", [message: Exception.format(kind, reason, stack)])
+    {:ok, resp} = Sableye.Templates.render(:"500", [message: Exception.format(kind, reason, stack)])
 
     send_resp(conn, conn.status, resp)
   end

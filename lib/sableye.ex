@@ -5,10 +5,9 @@ defmodule Sableye do
 
   require Logger
 
-  #require Sableye.Filters
-
   def compile_template() do
-    :erlydtl.compile_dir('templates', :templates, [
+    :erlydtl.compile_dir(Path.join(:code.priv_dir(:sableye), "templates") |> to_charlist,
+                         :"Elixir.Sableye.Templates", [
       out_dir: "templates_out",
       libraries: [{:"Elixir.Filters", :"Elixir.Filters"}],
       default_libraries: [:"Elixir.Filters"]
@@ -16,7 +15,7 @@ defmodule Sableye do
   end
 
   def start(_type, _args) do
-    compile_template
+    compile_template()
 
     children = [
       Plug.Adapters.Cowboy.child_spec(:http, Sableye.Router, [], port: 3000),
