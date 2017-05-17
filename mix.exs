@@ -16,7 +16,7 @@ defmodule Sableye.Mixfile do
   def application do
     [
       applications: [:logger, :cowboy, :erlydtl, :plug, :comeonin, :recaptcha,
-                     :mariaex, :poison, :earmark, :pot, :ecto, :eex],
+                     :mariaex, :poison, :earmark, :pot, :ecto, :eex, :timex],
       mod: {Sableye, []}
     ]
   end
@@ -41,7 +41,8 @@ defmodule Sableye.Mixfile do
       {:recaptcha, "~> 2.1"},
       {:earmark, "~> 1.2"},
       {:pot, "~> 0.9.5"},
-      {:distillery, "~> 1.0"}
+      {:distillery, "~> 1.0"},
+      {:timex, "~> 3.1"}
     ]
   end
 end

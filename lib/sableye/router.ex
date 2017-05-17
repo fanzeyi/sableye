@@ -2,6 +2,8 @@ defmodule Sableye.Router do
   use Plug.Router
   use Plug.ErrorHandler
 
+  import Sableye.Util
+
   require Logger
 
   plug Plug.Session,
@@ -42,15 +44,13 @@ defmodule Sableye.Router do
   alias Sableye.Model
 
   def bind_user(conn, _) do
-    case get_session(conn, :user) do
-      nil -> conn
-      x -> case Model.get(Model.User, x) do
-        nil ->
-          conn
-        user ->
-          conn = assign(conn, :user, user)
-          conn
-      end
+    with {:ok, user_id} <- error_tuple(get_session(conn, :user)),
+      {:ok, user} <- error_tuple(Model.get(Model.User, user_id))
+    do
+      conn = assign(conn, :user, user)
+      conn
+    else
+      {:error, _} -> conn
     end
   end
 
@@ -68,6 +68,9 @@ defmodule Sableye.Router do
 
   get "/totp", do: Sableye.User.totp :get, conn
   post "/totp", do: Sableye.User.totp :post, conn
+
+  get "/totp_login", do: Sableye.User.totp_login :get, conn
+  post "/totp_login", do: Sableye.User.totp_login :post, conn
 
   get "/_/create", do: Sableye.Post.create :get, conn
   post "/_/create", do: Sableye.Post.create :post, conn

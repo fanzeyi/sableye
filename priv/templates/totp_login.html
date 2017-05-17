@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}Two Factor Authentication{% endblock %}
+
+{% block body %}
+<form class="ui form {% if errors %}error{% endif %}" action="/totp_login" method="POST">
+  <h2 class="ui header">Two-Factor Authentication</h2>
+  <div class="ui error message">
+      <div class="header">
+          There were some errors with your submission
+      </div>
+      <ul class="list">
+          {% for msg in errors %}
+          <li>{{ msg | capfirst }}</li>
+          {% endfor %}
+      </ul>
+  </div>
+
+  <div class="required field {% if errors.email %}error{% endif %}">
+    <label>One-time Code</label>
+    <input type="text" name="code" placeholder="code">
+  </div>
+
+  {% csrf_token %}
+
+  <button class="ui primary button" type="submit">Submit</button>
+</form>
+{% endblock %}

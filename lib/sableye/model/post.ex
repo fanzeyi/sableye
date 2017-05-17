@@ -10,7 +10,7 @@ defmodule Sableye.Model.Post do
     field :content
     field :deleted, :boolean
     belongs_to :user, Model.User
-    timestamps
+    timestamps()
   end
 
   def changeset(post, params \\ %{}) do

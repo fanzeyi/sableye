@@ -1,5 +1,7 @@
 defmodule Sableye.View do
   import Plug.Conn
+  import Sableye.Util
+
   require Logger
 
   def render(conn, name, variables \\ []) do
@@ -35,11 +37,11 @@ defmodule Sableye.View do
   end
 
   def get_param(params, label) do
-    case params[label] do
-      x when is_nil(x) or x == "" ->
-        {:error, "#{label} is required"}
-      data -> {:ok, data}
-    end
+    error_tuple(params[label], "#{label} is required!")
+  end
+
+  def get_session?(conn, name) do
+    error_tuple(get_session(conn, name))
   end
 
   def ok_non_empty(nil) do

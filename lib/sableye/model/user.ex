@@ -63,6 +63,6 @@ defmodule Sableye.Model.User do
   end
 
   def add_totp(user, secret) do
-    user |> change(secret: secret)
+    user |> change(totp: secret)
   end
 end

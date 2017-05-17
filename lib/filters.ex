@@ -13,7 +13,7 @@ defmodule Filters do
     value |> NaiveDateTime.to_erl
   end
 
-  def csrf_token(value) do
+  def csrf_token(_value) do
     ['<input type="hidden" name="_csrf_token" value="',
     Plug.CSRFProtection.get_csrf_token(),
     '">']

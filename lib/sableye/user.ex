@@ -1,6 +1,10 @@
 defmodule Sableye.User do
   import Plug.Conn
+
   import Sableye.View
+  import Sableye.Util
+
+  use Timex
 
   alias Sableye.Model
 
@@ -37,9 +41,17 @@ defmodule Sableye.User do
          {:ok, user} <- Model.User.get_by_email_or_username(username),
          {:ok, _} <- Model.User.checkpw(user, password)
     do
-      conn
-      |> put_session(:user, user.id)
-      |> redirect("/")
+      Logger.info inspect(user)
+      if is_nil(user.totp) do
+        conn
+        |> put_session(:user, user.id)
+        |> redirect("/")
+      else
+        conn
+        |> put_session(:totp_user, user.id)
+        |> put_session(:totp_time, :os.system_time(:seconds))
+        |> redirect("/totp_login")
+      end
     else
       {:error, error} ->
         conn |> render(:login, [model: conn.params,
@@ -60,7 +72,9 @@ defmodule Sableye.User do
   end
 
   def totp(:get, conn) do
-    conn |> render(:totp, [secret: generate_totp_secret()])
+    secret = generate_totp_secret()
+    Logger.debug :pot.totp(secret)
+    conn |> render(:totp, [secret: secret])
   end
 
   def totp(:post, conn) do
@@ -70,6 +84,8 @@ defmodule Sableye.User do
     do
       user = conn.assigns[:user]
       user = user |> Model.User.add_totp(secret)
+
+      Logger.debug inspect(user)
 
       Model.update user
 
@@ -81,6 +97,49 @@ defmodule Sableye.User do
       {:error, error} ->
         conn |> render(:totp, [secret: Map.get(conn.params, "secret", generate_totp_secret()),
                                errors: [error]])
+    end
+  end
+
+  def totp_login(:get, conn) do
+    with {:ok, user_id} <- get_session?(conn, :totp_user),
+      {:ok, user} <- error_tuple(Model.get(Model.User, user_id)),
+      {:ok, _} <- error_tuple(!is_nil(user.totp)),
+      {:ok, totp_ts} <- get_session?(conn, :totp_time),
+      {:ok, ts} <- DateTime.from_unix(totp_ts),
+      {:ok, _} <- error_tuple(Timex.diff(Timex.now, ts, :seconds) < 120)
+    do
+      conn |> render(:totp_login)
+    else
+      {:error, err} ->
+      Logger.error inspect(err)
+      conn
+      |> delete_session(:totp_user)
+      |> delete_session(:totp_time)
+      |> redirect("/")
+    end
+  end
+
+  def totp_login(:post, conn) do
+    with {:ok, user_id} <- get_session?(conn, :totp_user),
+      {:ok, user} <- error_tuple(Model.get(Model.User, user_id)),
+      {:ok, _} <- error_tuple(!is_nil(user.totp)),
+      {:ok, totp_ts} <- get_session?(conn, :totp_time),
+      {:ok, ts} <- DateTime.from_unix(totp_ts),
+      {:ok, _} <- error_tuple(Timex.diff(Timex.now, ts, :seconds) < 120),
+      {:ok, code} <- get_param(conn.params, "code"),
+      {:ok, _} <- error_tuple(:pot.valid_totp(code, user.totp))
+    do
+      conn
+      |> delete_session(:totp_user)
+      |> delete_session(:totp_time)
+      |> put_session(:user, user.id)
+      |> redirect("/")
+      |> render(:totp_login)
+    else
+      _ -> conn
+        |> delete_session(:totp_user)
+        |> delete_session(:totp_time)
+        |> redirect("/login")
     end
   end
 end
