@@ -26,3 +26,5 @@ erl_crash.dump
 /rel/.files
 
 /node_modules
+
+/config/prod.exs

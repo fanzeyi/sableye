@@ -16,7 +16,7 @@ defmodule Sableye.Mixfile do
   def application do
     [
       applications: [:logger, :cowboy, :erlydtl, :plug, :comeonin, :recaptcha,
-                     :mariaex, :poison, :earmark, :pot, :ecto],
+                     :mariaex, :poison, :earmark, :pot, :ecto, :eex],
       mod: {Sableye, []}
     ]
   end

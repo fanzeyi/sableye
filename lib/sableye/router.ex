@@ -7,9 +7,9 @@ defmodule Sableye.Router do
   plug Plug.Session,
     store: :cookie,
     key: "_session",
-    encryption_salt: "encrypt  !! ",
-    signing_salt: "sign  !!  ",
-    key_length: 66
+    encryption_salt: Application.get_env(:sableye, :session_encryption_salt),
+    signing_salt: Application.get_env(:sableye, :session_signing_salt),
+    key_length: 64
   plug Plug.Static, at: "/static", from: Path.join(:code.priv_dir(:sableye), "static")
   plug Plug.Parsers, parsers: [:urlencoded]
   plug :put_secret_key_base
@@ -21,8 +21,7 @@ defmodule Sableye.Router do
   plug :dispatch
 
   def put_secret_key_base(conn, _) do
-    put_in conn.secret_key_base,
-      "7DD9882BA80A4AB2A2EF336C10F4A5CC2143E3DD4EFA45E4AED3EA4D1BE88C5ACD"
+    put_in conn.secret_key_base, Application.get_env(:sableye, :session_secret_key)
   end
 
   def tracking_user(conn, _) do

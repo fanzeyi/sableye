@@ -40,8 +40,13 @@ config :sableye, Sableye.Model,
   port: "3306"
 
 config :sableye,
-  totp_key: "THIS IS A TOTP KEY"
+  totp_key: "THIS IS A TOTP KEY",
+  session_encryption_salt: "FSAUFPOAIDPAODLKKJWQOIEUC",
+  session_signing_salt: "_)()_KOPDMOWIQE)(DKMLKN#OIPOFAP)",
+  session_secret_key: "7DD9882BA80A4AB2A2EF336C10F4A5CC2143E3DD4EFA45E4AED3EA4D1BE88C5D"
 
 config :recaptcha,
   public_key: "6LcY4yAUAAAAAK48eSi5OI1Jt-7Nb9FgCpzH58a8",
   secret: {:system, "RECAPTCHA_PRIVATE_KEY"}
+
+import_config "#{Mix.env}.exs"

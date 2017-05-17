@@ -41,7 +41,7 @@ end
 release :sableye do
   set version: current_version(:sableye)
   set applications: [
-    :runtime_tools,
+    :runtime_tools, :eex,
     :logger, :cowboy, :erlydtl, :plug, :comeonin, :recaptcha,
     :mariaex, :poison, :earmark, :pot, :ecto, :templates, :elixir_make
   ]
