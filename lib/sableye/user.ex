@@ -23,12 +23,21 @@ defmodule Sableye.User do
           Model.update user |> Ecto.Changeset.change(role: "admin")
         end
 
-        redirect(conn, "/login")
+        conn
+        |> set_flash("Registration is complete! Please login here.", :success)
+        |> redirect("/login")
       {:error, changeset} ->
         conn |> render(:_register, [model: conn.params,
                                     errors: format_errors(changeset.errors),
                                     recaptcha: Recaptcha.Template.display()])
     end
+  end
+
+  def login_user(conn, user) do
+    conn
+    |> set_flash("Login success!", :success)
+    |> put_session(:user, user.id)
+    |> redirect("/")
   end
 
   def login(:get, conn) do
@@ -41,11 +50,8 @@ defmodule Sableye.User do
          {:ok, user} <- Model.User.get_by_email_or_username(username),
          {:ok, _} <- Model.User.checkpw(user, password)
     do
-      Logger.info inspect(user)
       if is_nil(user.totp) do
-        conn
-        |> put_session(:user, user.id)
-        |> redirect("/")
+        conn |> login_user(user)
       else
         conn
         |> put_session(:totp_user, user.id)
@@ -61,6 +67,7 @@ defmodule Sableye.User do
 
   def logout(:get, conn) do
     conn
+    |> set_flash("You have logged out.", :success)
     |> delete_session(:user)
     |> redirect("/")
   end
@@ -85,11 +92,11 @@ defmodule Sableye.User do
       user = conn.assigns[:user]
       user = user |> Model.User.add_totp(secret)
 
-      Logger.debug inspect(user)
-
       Model.update user
 
-      conn |> redirect("/")
+      conn
+      |> set_flash("You have successfully added two-factor authentication to your account.")
+      |> redirect("/")
     else
       false ->
         conn |> render(:totp, [secret: Map.get(conn.params, "secret", generate_totp_secret()),
@@ -132,9 +139,7 @@ defmodule Sableye.User do
       conn
       |> delete_session(:totp_user)
       |> delete_session(:totp_time)
-      |> put_session(:user, user.id)
-      |> redirect("/")
-      |> render(:totp_login)
+      |> login_user(user)
     else
       _ -> conn
         |> delete_session(:totp_user)

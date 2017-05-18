@@ -28,7 +28,6 @@ defmodule Sableye.Router do
 
     case Map.get(conn.query_params, "csrf", nil) do
       "off" ->
-        Logger.debug "heeeeeeeeeeeeeeeeeeeeeeeere"
         Plug.Conn.put_private(conn, :plug_skip_csrf_protection, true)
       _ ->
         conn

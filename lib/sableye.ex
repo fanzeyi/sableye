@@ -6,12 +6,14 @@ defmodule Sableye do
   require Logger
 
   def compile_template() do
-    :erlydtl.compile_dir(Path.join(:code.priv_dir(:sableye), "templates") |> to_charlist,
+    res = :erlydtl.compile_dir(Path.join(:code.priv_dir(:sableye), "templates") |> to_charlist,
                          :"Elixir.Sableye.Templates", [
       out_dir: "templates_out",
       libraries: [{:"Elixir.Filters", :"Elixir.Filters"}],
       default_libraries: [:"Elixir.Filters"]
     ])
+
+    Logger.info inspect(res)
   end
 
   def start(_type, _args) do

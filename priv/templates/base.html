@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width">
     <title>{% block title %}{% endblock %}</title>
+    <link rel="shortcut icon" type="image/png" href="/static/favicon.png" />
     <link rel="stylesheet" type="text/css" href="/static/semantic/semantic.min.css">
     <link rel="stylesheet" type="text/css" href="/static/style.css">
     <script
@@ -41,6 +42,13 @@
       </div>
 
       <div class="ui main text container">
+          {% if flash.message != nil %}
+          <div class="ui {{ flash.type }} message">
+              <i class="close icon"></i>
+              <div class="header">{{ flash.message }}</div>
+          </div>
+          {% endif %}
+
           {% block body %}
           {% endblock %}
       </div>
@@ -60,6 +68,16 @@
       </div>
     </div>
   </div>
-  <script type="text/javascript">$(".ui.dropdown").dropdown();</script>
+  <script type="text/javascript">
+      $(".ui.dropdown").dropdown();
+$('.message .close')
+  .on('click', function() {
+    $(this)
+      .closest('.message')
+      .transition('fade')
+    ;
+  })
+;
+  </script>
   </body>
 </html>

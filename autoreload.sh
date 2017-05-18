@@ -1,7 +1,7 @@
 #!/bin/bash
 
 watchman -j <<-EOT
-["trigger", "./templates", {
+["trigger", "./priv/templates", {
    "name": "build-templates",
    "expression": ["imatch","**/*.html", "wholename"],
    "command": [

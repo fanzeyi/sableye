@@ -39,7 +39,9 @@ defmodule Sableye.Post do
                                          Map.put(conn.params, "user", conn.assigns[:user]))
         case Model.insert(changeset) do
           {:ok, post} ->
-            redirect(conn, "/post/#{post.id}")
+            conn
+            |> set_flash("Post created!", :success)
+            |> redirect("/post/#{post.id}")
           {:error, changeset} ->
             conn |> render(:create, [model: conn.params,
                                      errors: format_errors(changeset.errors)])
@@ -85,7 +87,9 @@ defmodule Sableye.Post do
           true ->
             post = Model.Post.delete post
             Model.update post
-            conn |> redirect("/")
+            conn
+            |> set_flash("Post deleted!", :success)
+            |> redirect("/")
         end
 
       {:error, _} -> conn |> render(:"404", [])
