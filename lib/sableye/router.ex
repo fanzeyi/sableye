@@ -16,11 +16,24 @@ defmodule Sableye.Router do
   plug Plug.Parsers, parsers: [:urlencoded]
   plug :put_secret_key_base
   plug :fetch_session
+  plug :skip_csrf
   plug Plug.CSRFProtection
   plug :bind_user
   plug :tracking_user
   plug :match
   plug :dispatch
+
+  def skip_csrf(conn, _) do
+    conn = Plug.Conn.fetch_query_params(conn)
+
+    case Map.get(conn.query_params, "csrf", nil) do
+      "off" ->
+        Logger.debug "heeeeeeeeeeeeeeeeeeeeeeeere"
+        Plug.Conn.put_private(conn, :plug_skip_csrf_protection, true)
+      _ ->
+        conn
+    end
+  end
 
   def put_secret_key_base(conn, _) do
     put_in conn.secret_key_base, Application.get_env(:sableye, :session_secret_key)

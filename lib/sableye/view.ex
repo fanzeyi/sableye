@@ -43,12 +43,4 @@ defmodule Sableye.View do
   def get_session?(conn, name) do
     error_tuple(get_session(conn, name))
   end
-
-  def ok_non_empty(nil) do
-    {:error, nil}
-  end
-
-  def ok_non_empty(things) do
-    {:ok, things}
-  end
 end

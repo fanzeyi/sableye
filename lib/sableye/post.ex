@@ -1,6 +1,8 @@
 defmodule Sableye.Post do
-  import Sableye.View
   import Plug.Conn
+
+  import Sableye.View
+  import Sableye.Util
 
   alias Sableye.Model
 
@@ -11,7 +13,6 @@ defmodule Sableye.Post do
   end
 
   def create(:post, conn) do
-    Logger.debug inspect(conn.params)
     case Map.get(conn.params, "injection", "") == "on" do
       true ->
         # Allow SQL Injection
@@ -50,7 +51,7 @@ defmodule Sableye.Post do
   defp get_post(conn, label \\ "post_id", all \\ false) do
     with {:ok, post_id} <- get_param(conn.path_params, label),
       {id, ""} <- Integer.parse(post_id),
-      {:ok, post} <- Model.get(Model.Post, id) |> ok_non_empty
+      {:ok, post} <- Model.get(Model.Post, id) |> error_tuple
     do
       case (not all) and post.deleted do
         true -> {:error, nil}
